@@ -25,13 +25,18 @@ public class StatistiqueTests {
 
     @Test
     public void test_prix_moyen() {
-        when(statistiqueImpl.prixMoyen()).thenReturn(new Echantillon(2, 750_000));
+        Voiture voiture = mock(Voiture.class);
+        when(voiture.getPrix()).thenReturn(1_000_000);
 
-        Echantillon echantillon = statistiqueImpl.prixMoyen();
-        verify(statistiqueImpl, times(1)).prixMoyen();
+        Statistique statistique = new StatistiqueImpl();
 
-        assertEquals(2, echantillon.nombreDeVoitures);
-        assertEquals(750_000, echantillon.prixMoyen);
+        statistique.ajouter(voiture);
+        statistique.ajouter(voiture);
+
+        Echantillon echantillon = statistique.prixMoyen();
+
+        assertEquals(2, echantillon.getNombreDeVoitures());
+        assertEquals(1_000_000, echantillon.getPrixMoyen());
     }
 
 }

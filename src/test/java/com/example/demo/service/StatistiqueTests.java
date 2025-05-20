@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 
@@ -16,25 +17,21 @@ public class StatistiqueTests {
 
     @Test
     public void test_ajouter() {
-        doNothing().when(statistiqueImpl).ajouter(new Voiture());
+        Voiture voiture = new Voiture("McLaren", 1_000_000);
+
+        statistiqueImpl.ajouter(voiture);
+        verify(statistiqueImpl, times(1)).ajouter(voiture);
     }
 
     @Test
-    public void test_prix_moyen_voiture_simple() {
-        doNothing().when(statistiqueImpl).ajouter(new Voiture("McLaren", 1_000_000));
-        when(statistiqueImpl.prixMoyen()).thenReturn(new Echantillon(1, 1_000_000));
-    }
-
-    @Test
-    public void test_prix_moyen_multi_voitures() {
-        doNothing().when(statistiqueImpl).ajouter(new Voiture("McLaren", 1_000_000));
-        doNothing().when(statistiqueImpl).ajouter(new Voiture("Ferrari", 500_000));
+    public void test_prix_moyen() {
         when(statistiqueImpl.prixMoyen()).thenReturn(new Echantillon(2, 750_000));
-    }
 
-    @Test
-    public void test_prix_moyen_exception() {
-        doThrow(ArithmeticException.class).when(statistiqueImpl).prixMoyen();
+        Echantillon echantillon = statistiqueImpl.prixMoyen();
+        verify(statistiqueImpl, times(1)).prixMoyen();
+
+        assertEquals(2, echantillon.nombreDeVoitures);
+        assertEquals(750_000, echantillon.prixMoyen);
     }
 
 }

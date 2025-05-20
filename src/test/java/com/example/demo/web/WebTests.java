@@ -51,4 +51,15 @@ class WebTests {
         verify(statistiqueImpl, times(1)).ajouter(any(Voiture.class));
     }
 
+    @Test
+    public void voiture_test_exception() throws Exception {
+        doNothing().when(statistiqueImpl).ajouter(any(Voiture.class));
+        when(statistiqueImpl.prixMoyen()).thenThrow(new ArithmeticException(""));
+
+        mockMvc.perform(get("/statistique"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+    }
+
 }
